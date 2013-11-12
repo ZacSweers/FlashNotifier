@@ -1,25 +1,28 @@
 package com.leepapesweers.flashnotifier;
 
-import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.Switch;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 
-import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
 
-public class Main extends SherlockActivity {
+public class Main extends SherlockFragmentActivity {
 
     private boolean mServiceRunning;
     private Switch mServiceSwitch;
     private SharedPreferences mPrefs;
+    ActionBar mActionBar;
+    ViewPager mPager;
+    ActionBar.Tab tab;
 
 
     @Override
@@ -30,15 +33,57 @@ public class Main extends SherlockActivity {
         mPrefs = this.getSharedPreferences(
                 "com.leepapesweers.flashnotifier", Context.MODE_PRIVATE);
 
-        mServiceSwitch = (Switch) findViewById(R.id.chkbox);
+        mActionBar = getSupportActionBar();
+        mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+        mPager = (ViewPager) findViewById(R.id.pager);
+        FragmentManager fm = getSupportFragmentManager();
 
-        mServiceRunning = isServiceRunning();
+        // Get swipes
+        ViewPager.SimpleOnPageChangeListener ViewPagerListener = new ViewPager.SimpleOnPageChangeListener() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                // Find the ViewPager Position
+                mActionBar.setSelectedNavigationItem(position);
+            }
+        };
 
-        // Check pref values
-        ((CheckBox) findViewById(R.id.smsCheckBox)).setChecked(mPrefs.getBoolean("smsNotifications", false));
-        ((CheckBox) findViewById(R.id.callCheckBox)).setChecked(mPrefs.getBoolean("callNotifications", false));
+        mPager.setOnPageChangeListener(ViewPagerListener);
 
-        updateServiceStatus();
+        // Locate the adapter class called ViewPagerAdapter.java
+        ViewPagerAdapter viewpageradapter = new ViewPagerAdapter(fm);
+
+        // Set the View Pager Adapter into ViewPager
+        mPager.setAdapter(viewpageradapter);
+
+        // Capture tab button clicks
+        ActionBar.TabListener tabListener = new ActionBar.TabListener() {
+
+            @Override
+            public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
+                // Pass the position on tab click to ViewPager
+                mPager.setCurrentItem(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft) {
+                // TODO Auto-generated method stub
+            }
+
+            @Override
+            public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft) {
+                // TODO Auto-generated method stub
+            }
+        };
+
+        // Create first Tab
+        tab = mActionBar.newTab().setText("Settings").setTabListener(tabListener);
+        mActionBar.addTab(tab);
+
+        // Create second Tab
+        tab = mActionBar.newTab().setText("Access").setTabListener(tabListener);
+        mActionBar.addTab(tab);
+
     }
 
     /**
@@ -50,24 +95,24 @@ public class Main extends SherlockActivity {
         if (chkBox.isChecked()) {
             mServiceRunning = true;
             startService(new Intent(this, SMSCallListener.class));
-            updateServiceStatus();
+            updateServiceStatus(chkBox);
         } else {
             mServiceRunning = false;
             stopService(new Intent(this, SMSCallListener.class));
-            updateServiceStatus();
+            updateServiceStatus(chkBox);
         }
     }
 
     /**
      * Updates the contents of the switch view
      */
-    public void updateServiceStatus() {
+    public void updateServiceStatus(Switch chkBox) {
         if (mServiceRunning) {
-            mServiceSwitch.setChecked(true);
-            mServiceSwitch.setText("Service is running!");
+            chkBox.setChecked(true);
+            chkBox.setText("Service is running!");
         } else {
-            mServiceSwitch.setChecked(false);
-            mServiceSwitch.setText("Service isn't running");
+            chkBox.setChecked(false);
+            chkBox.setText("Service isn't running");
         }
     }
 
@@ -88,12 +133,12 @@ public class Main extends SherlockActivity {
         startActivity(new Intent(this, APIAccess.class));
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getSupportMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.main, menu);
+//        return true;
+//    }
 
     /**
      * Borrowed from http://stackoverflow.com/a/5921190

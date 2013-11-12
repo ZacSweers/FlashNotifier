@@ -14,15 +14,15 @@ repositories {
 
 android {
     compileSdkVersion 18
-    buildToolsVersion "18.1.0"
+    buildToolsVersion '18.1.0'
 
     defaultConfig {
-        minSdkVersion 14
+        minSdkVersion 7
         targetSdkVersion 18
     }
 }
 
 dependencies {
-    compile 'com.android.support:support-v4:18.0.+'
-    compile project(':actionbarsherlock')
+    compile 'com.actionbarsherlock:actionbarsherlock:4.4.0@aar'
+    compile files('libs/android-support-v4.jar')
 }
