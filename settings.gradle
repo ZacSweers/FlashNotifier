@@ -1,2 +1,1 @@
 include ':FlashNotifier'
-include ':FlashNotifier:libs:switchbackport'

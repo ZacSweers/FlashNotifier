@@ -17,11 +17,11 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int arg0) {
         switch (arg0) {
 
-            // Open FragmentTab1.java
+            // Open FragmentMainTab.java
             case 0:
                 return new FragmentMainTab();
 
-            // Open FragmentTab2.java
+            // Open ListFragmentAccessTab.java
             case 1:
                 return new ListFragmentAccessTab();
         }

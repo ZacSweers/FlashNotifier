@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_card">
+
+    <!--App image-->
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/ic_generic"
+        android:src="@drawable/ic_generic"
+        android:layout_margin="5dp"/>
+
+    <!--
+        App name
+        Text color signifies if it's white or blacklisted
+    -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="App name"
+        android:id="@+id/tv_appname"
+        android:layout_gravity="center_horizontal" />
+
+    <!--(i) button for info, popup dialog. Options to blacklist or whitelist-->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:id="@+id/access_toggle_layout"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_action_tick"
+            android:background="@drawable/selectable_regular"
+            android:id="@+id/ic_tick"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_action_cancel"
+            android:background="@drawable/selectable_regular"
+            android:id="@+id/ic_x"/>
+
+        </LinearLayout>
+
+</LinearLayout>

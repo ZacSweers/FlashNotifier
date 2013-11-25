@@ -14,10 +14,11 @@ import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
-import android.widget.Switch;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragment;
+
+import org.jraf.android.backport.switchwidget.Switch;
 
 public class FragmentMainTab extends SherlockFragment {
 

@@ -14,7 +14,9 @@ import android.util.Log;
 import android.widget.Toast;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SMSCallListener extends Service {
 
@@ -22,7 +24,9 @@ public class SMSCallListener extends Service {
     private boolean mLightOn;
     private boolean mFlashing;
     private SharedPreferences mPrefs;
+    private SharedPreferences mAPIPrefs;
     private Thread flashingThread;
+    private HashMap<String, Boolean> mMap;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startID) {
@@ -32,6 +36,9 @@ public class SMSCallListener extends Service {
 
         mPrefs = this.getSharedPreferences(
                 "com.leepapesweers.flashnotifier", Context.MODE_PRIVATE);
+
+        mAPIPrefs = getApplicationContext().getSharedPreferences(
+                "com.leepapesweers.flashnotifier.apiaccess", Context.MODE_PRIVATE);
 
         mLightOn = false;
         mFlashing = false;
@@ -256,5 +263,48 @@ public class SMSCallListener extends Service {
         unregisterReceiver(mCallListener);
         unregisterReceiver(mSMSListener);
         unregisterReceiver(mAPIListener);
+    }
+
+
+    /**
+     * Loads the preferences into a hashmap
+     * Loosely based on http://stackoverflow.com/a/4955428
+     */
+    private void refreshACList() {
+        mMap.clear();
+        Map<String, Boolean> map = (Map<String, Boolean>) mAPIPrefs.getAll();
+        if(!map.isEmpty()){
+            for (Map.Entry<String, Boolean> stringBooleanEntry : map.entrySet()) {
+                Map.Entry pairs = (Map.Entry) stringBooleanEntry;
+                mMap.put((String) pairs.getKey(), (Boolean) pairs.getValue());
+            }
+        }
+    }
+
+    private void updateACList(String appName, boolean b) {
+
+        if (mAPIPrefs.contains(appName)) {
+            SharedPreferences.Editor editor = mAPIPrefs.edit();
+            editor.putBoolean(appName, b).commit();
+        }
+
+        refreshACList();
+
+//        if (value.equals("")) {
+//
+//            boolean storedPreference = preferences.contains(app);
+//            if (storedPreference) {
+//                SharedPreferences.Editor editor = preferences.edit();
+//                editor.remove(key); // value to store
+//                Log.d("KEY", key);
+//                editor.commit();
+//            }
+//        }else{
+//
+//            SharedPreferences.Editor editor = preferences.edit();
+//            editor.putString(key, value); // value to store
+//            Log.d("KEY", key);
+//            editor.commit();
+//        }
     }
 }
