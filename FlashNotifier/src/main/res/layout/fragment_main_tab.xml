@@ -9,10 +9,9 @@
         android:layout_height="wrap_content"
         android:text="Service"
         android:textSize="20sp"
-        android:id="@+id/chkbox"
+        android:id="@+id/service_switch"
         android:checked="false"
-        android:hint="Click to toggle"
-        android:onClick="toggleService"/>
+        android:hint="Click to toggle"/>
 
     <!-- This is just a divider -->
     <View

@@ -23,7 +23,7 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
 
             // Open FragmentTab2.java
             case 1:
-                return new FragmentAccessTab();
+                return new ListFragmentAccessTab();
         }
         return null;
     }

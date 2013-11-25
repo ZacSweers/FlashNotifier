@@ -6,13 +6,14 @@
 
     <uses-sdk
         android:minSdkVersion="7"
-        android:targetSdkVersion="18" />
+        android:targetSdkVersion="19" />
 
     <uses-permission android:name="android.permission.CAMERA"
         android:required="true" />
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
+    <uses-feature android:name="android.hardware.camera" android:required="true"/>
 
     <application
         android:allowBackup="true"
@@ -28,12 +29,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".APIAccess"
-            android:label="API Access Control" />
-
         <service android:name=".SMSCallListener" />
     </application>
-
-    <uses-feature android:name="android.hardware.camera" android:required="true"></uses-feature>
 
 </manifest>
