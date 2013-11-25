@@ -1,2 +1,2 @@
 include ':FlashNotifier'
-include 'actionbarsherlock'
+include ':FlashNotifier:libs:switchbackport'

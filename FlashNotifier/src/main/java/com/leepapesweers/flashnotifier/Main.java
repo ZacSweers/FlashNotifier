@@ -11,6 +11,7 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.Switch;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
@@ -84,7 +85,19 @@ public class Main extends SherlockFragmentActivity {
         tab = mActionBar.newTab().setText("Access").setTabListener(tabListener);
         mActionBar.addTab(tab);
 
+        SharedPreferences.OnSharedPreferenceChangeListener prefListener =
+            new SharedPreferences.OnSharedPreferenceChangeListener() {
+                public void onSharedPreferenceChanged(SharedPreferences prefs,String key) {
+                    if (key.equals("apiDefault"))
+                    {
+                        Toast.makeText(getBaseContext(), "default changed", Toast.LENGTH_SHORT).show();
+                    }
+                }
+           };
+        mPrefs.registerOnSharedPreferenceChangeListener(prefListener);
     }
+
+
 
     /**
      * Toggle the service if the checkboxview is clicked
@@ -117,11 +130,11 @@ public class Main extends SherlockFragmentActivity {
     }
 
     public void updateUserPref(View v) {
+
         CheckBox checkBox = (CheckBox) v;
         boolean val = checkBox.isChecked();
 
         if (v.getId() == R.id.callCheckBox) {
-//            Toast.makeText(this, "Calls updated", Toast.LENGTH_LONG).show();
             mPrefs.edit().putBoolean("callNotifications", val).commit();
         } else {
             // Must be SMS

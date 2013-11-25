@@ -9,6 +9,7 @@ buildscript {
 apply plugin: 'android'
 
 repositories {
+    maven { url "http://dl.bintray.com/populov/maven" }
     mavenCentral()
 }
 
@@ -25,4 +26,6 @@ android {
 dependencies {
     compile 'com.actionbarsherlock:actionbarsherlock:4.4.0@aar'
     compile files('libs/android-support-v4.jar')
+    compile 'com.viewpagerindicator:library:2.4.1@aar'
+    compile project(':FlashNotifier:libs:switchbackport')
 }

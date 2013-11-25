@@ -16,6 +16,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Handler;
 
 public class SMSCallListener extends Service {
 
@@ -23,11 +24,12 @@ public class SMSCallListener extends Service {
     private boolean mLightOn;
     private boolean mFlashing;
     private SharedPreferences mPrefs;
+    private Thread flashingThread;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startID) {
 
-        Toast.makeText(getApplicationContext(), "Started service", Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), "Started service", Toast.LENGTH_SHORT).show();
         Log.i("SERVICE", "Service started");
 
         mPrefs = this.getSharedPreferences(
@@ -43,6 +45,10 @@ public class SMSCallListener extends Service {
         // Register call listener
         IntentFilter callFilter = new IntentFilter("android.intent.action.PHONE_STATE");
         registerReceiver(mCallListener, callFilter);
+
+        // Register SMS listener
+        IntentFilter apiFilter = new IntentFilter("com.leepapesweers.flashnotifier.API");
+        registerReceiver(mAPIListener, apiFilter);
 
         return Service.START_STICKY;
     }
@@ -140,6 +146,45 @@ public class SMSCallListener extends Service {
         }
     }
 
+    /**
+     * Toggle method for continuous flashing
+     * This controls a thread that flashes the LED on an interval until the thread is stopped
+     * Used for phone calls
+     */
+    public void toggleContinuousFlash(boolean b) {
+        if (b && !mFlashing) {
+            flashingThread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    mFlashing = true;
+                    while (mFlashing) {
+                        try {
+                            flashOn();
+                            Thread.sleep(100);
+                            flashOff();
+                            Thread.sleep(100);
+                            flashOn();
+                            Thread.sleep(100);
+                            flashOff();
+                            Thread.sleep(400);
+                        } catch (InterruptedException e) {
+                            Log.v("Continuous flashing", "Flashing stopped");
+                        }
+
+                    }
+                }
+            });
+            flashingThread.run();
+        }
+        else {
+            mFlashing = false;
+            if (flashingThread != null) {
+                flashingThread.stop();
+            }
+            flashingThread = null;
+        }
+    }
+
     private void flashOn() {
         mCamera = Camera.open();
         Camera.Parameters parameters = mCamera.getParameters();
@@ -161,7 +206,7 @@ public class SMSCallListener extends Service {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (mPrefs.getBoolean("smsNotifications", false)) {
-                List<Integer> flashes = Arrays.asList(200, 100, 200, 100);
+                List<Integer> flashes = Arrays.asList(50, 50, 50, 50);
                 new CustomFlashTask().execute(flashes);
             }
         }
@@ -176,26 +221,42 @@ public class SMSCallListener extends Service {
 
                 if(state.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
                     // Ringing
-                    new FlashTask().execute();
+//                    new FlashTask().execute();
+                    toggleContinuousFlash(false);
                 }
 
                 if(state.equals(TelephonyManager.EXTRA_STATE_OFFHOOK)) {
                     // Detect call answered
+                    toggleContinuousFlash(false);
                 }
 
                 if (state.equals(TelephonyManager.EXTRA_STATE_IDLE)) {
                     // Detect end of call, probably don't need this
+                    toggleContinuousFlash(false);
                 }
             }
 
         }
     };
 
+    private BroadcastReceiver mAPIListener = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (mPrefs.getBoolean("apiDefault", false)) {
+                List<Integer> flashes = Arrays.asList(50, 50, 50, 50);
+                new CustomFlashTask().execute(flashes);
+            }
+//            toggleContinuousFlash(true);
+        }
+    };
+
     @Override
     public void onDestroy() {
-        Toast.makeText(getApplicationContext(), "Started stopped", Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), "Service stopped", Toast.LENGTH_SHORT).show();
         Log.i("SERVICE", "Service stopped");
         unregisterReceiver(mCallListener);
         unregisterReceiver(mSMSListener);
+        unregisterReceiver(mAPIListener);
     }
 }
