@@ -5,6 +5,6 @@
         android:drawable="@android:color/white"
         />
     <item android:state_pressed="true"
-        android:drawable="@color/holo_blue"
+        android:drawable="@drawable/selected_circle_blue"
         />
 </selector>

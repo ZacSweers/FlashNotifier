@@ -18,7 +18,6 @@ import android.widget.Toast;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class SMSCallListener extends Service {
 
@@ -30,6 +29,8 @@ public class SMSCallListener extends Service {
     private SharedPreferences mAPIPrefs;
     private Thread flashingThread;
     private HashMap<String, Boolean> mMap;
+    private SharedPreferences mWhitelistPrefs;
+    private SharedPreferences mBlacklistPrefs;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startID) {
@@ -42,6 +43,12 @@ public class SMSCallListener extends Service {
 
         mAPIPrefs = getApplicationContext().getSharedPreferences(
                 "com.leepapesweers.flashnotifier.apiaccess", Context.MODE_PRIVATE);
+
+        mWhitelistPrefs = getApplicationContext().getSharedPreferences(
+                "com.leepapesweers.flashnotifier.whitelistprefs", Context.MODE_PRIVATE);
+
+        mBlacklistPrefs = getApplicationContext().getSharedPreferences(
+                "com.leepapesweers.flashnotifier.blacklistprefs", Context.MODE_PRIVATE);
 
         mLightOn = false;
         mFlashing = false;
@@ -68,7 +75,7 @@ public class SMSCallListener extends Service {
     /**
      * Done in a task because can't use sleep() on main thread
      */
-    public class FlashTask extends AsyncTask<Void, Void, Void> {
+    public class GenericFlashTask extends AsyncTask<Void, Void, Void> {
 
         @Override
         protected void onPreExecute(){
@@ -209,6 +216,7 @@ public class SMSCallListener extends Service {
         mLightOn = false;
     }
 
+    ////////////////// Set up broadcast receivers /////////////////////////////////
     private BroadcastReceiver mSMSListener = new BroadcastReceiver() {
 
         @Override
@@ -230,7 +238,7 @@ public class SMSCallListener extends Service {
                 if(state.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
                     // Ringing
 //                    new FlashTask().execute();
-                    toggleContinuousFlash(false);
+                    toggleContinuousFlash(true);
                 }
 
                 if(state.equals(TelephonyManager.EXTRA_STATE_OFFHOOK)) {
@@ -248,7 +256,7 @@ public class SMSCallListener extends Service {
     };
 
     /**
-     * APIlistener instance
+     * API listener, anonymous inner class
      */
     private BroadcastReceiver mAPIListener = new BroadcastReceiver() {
 
@@ -256,11 +264,15 @@ public class SMSCallListener extends Service {
         public void onReceive(Context context, Intent intent) {
 
             // First verify the API call
-            if (verifyAPICall(intent)) {
+            String appName = verifyAPICall(intent);
+            if (appName != null) {
+
+                Log.d("Receiving", appName);
 
                 // Check user prefs
                 // IF it's on the whitelist OR (not on the blacklist AND default access is "allow")
-                if (mPrefs.getBoolean("apiDefault", false)) {
+                if (mWhitelistPrefs.contains(appName) ||
+                        (mPrefs.getBoolean("apiDefault", false) && !mBlacklistPrefs.contains(appName))) {
                     List<Integer> flashes;
                     flashes = intent.getIntegerArrayListExtra("flash_pattern");
                     if (flashes == null) {
@@ -275,16 +287,16 @@ public class SMSCallListener extends Service {
         /**
          * Method for verifying that the API call is allowed, based on the calling app's permissions
          * @param intent sending intent to use the API
-         * @return true if allowed, false if not
+         * @return String null if it failed, app name if it worked
          */
-        private boolean verifyAPICall(Intent intent) {
+        private String verifyAPICall(Intent intent) {
             PackageManager pm = getPackageManager();
             String packageName = intent.getStringExtra("calling_application");
 
             // Check to make sure it included the package name
             if (packageName == null) {
                 Toast.makeText(getBaseContext(), "App has malformed API call (missing package name)", Toast.LENGTH_SHORT).show();
-                return false;
+                return null;
             }
 
             // Get the package name
@@ -294,69 +306,27 @@ public class SMSCallListener extends Service {
             } catch (final PackageManager.NameNotFoundException e) {
                 ai = null;
             }
-            final String applicationName = (String) (ai != null ? pm.getApplicationLabel(ai) : "(unknown)");
+            final String applicationName = (String) (ai != null ? pm.getApplicationLabel(ai) : null);
 
             Log.d("APIAccess", "package and app name are " + packageName + " " + applicationName);
 
             // Check the manifest permissions
             if (PackageManager.PERMISSION_DENIED == pm.checkPermission(PERMISSION, packageName)) {
                 Toast.makeText(getBaseContext(), applicationName + " hasn't declared the permission in the manifest", Toast.LENGTH_SHORT).show();
-                return false;
+                return null;
             }
 
-            return true;
+            return applicationName;
         }
     };
 
     @Override
     public void onDestroy() {
+        // Need to unregister listeners
         Toast.makeText(getApplicationContext(), "Service stopped", Toast.LENGTH_SHORT).show();
         Log.i("SERVICE", "Service stopped");
         unregisterReceiver(mCallListener);
         unregisterReceiver(mSMSListener);
         unregisterReceiver(mAPIListener);
-    }
-
-
-    /**
-     * Loads the preferences into a hashmap mMap
-     * Loosely based on http://stackoverflow.com/a/4955428
-     */
-    private void refreshACList() {
-        mMap.clear();
-        Map<String, Boolean> map = (Map<String, Boolean>) mAPIPrefs.getAll();
-        if(!map.isEmpty()){
-            for (Map.Entry<String, Boolean> stringBooleanEntry : map.entrySet()) {
-                Map.Entry pairs = (Map.Entry) stringBooleanEntry;
-                mMap.put((String) pairs.getKey(), (Boolean) pairs.getValue());
-            }
-        }
-    }
-
-    private void updateACList(String appName, boolean b) {
-
-        if (mAPIPrefs.contains(appName)) {
-            SharedPreferences.Editor editor = mAPIPrefs.edit();
-            editor.putBoolean(appName, b).commit();
-        }
-
-        refreshACList();
-
-//        if (value.equals("")) {
-//
-//            boolean storedPreference = preferences.contains(app);
-//            if (storedPreference) {
-//                SharedPreferences.Editor editor = preferences.edit();
-//                editor.remove(key); // value to store
-//                Log.d("KEY", key);
-//                editor.commit();
-//            }
-//        }else{
-//
-//            SharedPreferences.Editor editor = preferences.edit();
-//            editor.putString(key, value); // value to store
-//            Log.d("KEY", key);
-//            editor.commit();
-//        }
     }
 }
