@@ -249,7 +249,11 @@ public class SMSCallListener extends Service {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (mPrefs.getBoolean("apiDefault", false)) {
-                List<Integer> flashes = Arrays.asList(50, 50, 50, 50);
+                List<Integer> flashes = null;
+                flashes = intent.getIntegerArrayListExtra("flash_pattern");
+                if (flashes == null) {
+                    flashes = Arrays.asList(50, 50, 50, 50);
+                }
                 new CustomFlashTask().execute(flashes);
             }
 //            toggleContinuousFlash(true);

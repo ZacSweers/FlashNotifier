@@ -32,13 +32,17 @@ public class ListFragmentAccessTab extends SherlockListFragment {
                 "com.leepapesweers.flashnotifier.apiaccess", Context.MODE_PRIVATE);
 
 //        ListView listView = getListView();
-        String[] from = new String[] {"icon", "appname", "tick", "x"};
-        int[] to = new int[] { R.id.ic_generic, R.id.tv_appname, R.id.ic_tick, R.id.ic_x};
+//        String[] from = new String[] {"icon", "appname", "tick", "x"};
+//        int[] to = new int[] { R.id.ic_generic, R.id.tv_appname, R.id.ic_tick, R.id.ic_x};
+        String[] from = new String[] {"appname"};
+        int[] to = new int[] { R.id.tv_appname};
         mAdapter = new SimpleAdapter(getActivity(), mURLListItems, R.layout.api_access_listitem,
                 from, to);
         setListAdapter(mAdapter);
 
-        example();
+        for (int i = 0; i < 10; ++i) {
+            example();
+        }
 
 //        loadACList();
 

@@ -20,6 +20,8 @@ import com.actionbarsherlock.app.SherlockFragment;
 
 import org.jraf.android.backport.switchwidget.Switch;
 
+import java.util.ArrayList;
+
 public class FragmentMainTab extends SherlockFragment {
 
     private boolean mServiceRunning;
@@ -92,7 +94,11 @@ public class FragmentMainTab extends SherlockFragment {
             @Override
             public void onClick(View view) {
                 if (isServiceRunning()) {
+                    ArrayList<Integer> pattern = new ArrayList<Integer>();
+                    pattern.add(50);
+                    pattern.add(50);
                     Intent i = new Intent("com.leepapesweers.flashnotifier.API");
+                    i.putIntegerArrayListExtra("flash_pattern", pattern);
                     getActivity().sendBroadcast(i);
                 } else {
                     Toast.makeText(getActivity(), "Service isn't running!", Toast.LENGTH_SHORT).show();
