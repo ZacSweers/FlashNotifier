@@ -99,6 +99,7 @@ public class FragmentMainTab extends SherlockFragment {
                     pattern.add(50);
                     Intent i = new Intent("com.leepapesweers.flashnotifier.API");
                     i.putIntegerArrayListExtra("flash_pattern", pattern);
+                    i.putExtra("calling_application", getActivity().getPackageName());
                     getActivity().sendBroadcast(i);
                 } else {
                     Toast.makeText(getActivity(), "Service isn't running!", Toast.LENGTH_SHORT).show();

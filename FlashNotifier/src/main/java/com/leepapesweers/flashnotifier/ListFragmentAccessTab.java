@@ -2,7 +2,10 @@ package com.leepapesweers.flashnotifier;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,11 +15,14 @@ import android.widget.SimpleAdapter;
 import com.actionbarsherlock.app.SherlockListFragment;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ListFragmentAccessTab extends SherlockListFragment {
 
+    private final String PERMISSION = "android.permission.ACCESS_FLASHNOTIFIER";
     private HashMap<String, Boolean> mMap;
     private SharedPreferences mPrefs;
     private SimpleAdapter mAdapter;
@@ -40,9 +46,18 @@ public class ListFragmentAccessTab extends SherlockListFragment {
                 from, to);
         setListAdapter(mAdapter);
 
-        for (int i = 0; i < 10; ++i) {
-            example();
+//        for (int i = 0; i < 10; ++i) {
+//            example();
+//        }
+
+        ArrayList<String> appnames = getInstalledApps(getActivity());
+        for (String appname : appnames) {
+            HashMap<String, Object> map = new HashMap<String, Object>();
+            map.put("appname", appname);
+            mURLListItems.add(map);
         }
+
+        mAdapter.notifyDataSetChanged();
 
 //        loadACList();
 
@@ -124,5 +139,28 @@ public class ListFragmentAccessTab extends SherlockListFragment {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
+    }
+
+    /**
+     * Method for sniffing apps that use a certain permission.
+     * Borrowed/based on here: http://stackoverflow.com/a/13028631/3034339
+     * @param context Context of app being used
+     * @return ArrayList of strings of app names with matching description
+     */
+    private ArrayList<String> getInstalledApps(Context context) {
+        ArrayList<String> results = new ArrayList<String>();
+        PackageManager packageManager = context.getPackageManager();
+        List<PackageInfo> applist = packageManager.getInstalledPackages(0);
+
+        for (PackageInfo pk : applist) {
+            if (PackageManager.PERMISSION_GRANTED == packageManager.checkPermission(PERMISSION, pk.packageName))
+                results.add("" + pk.applicationInfo.loadLabel(packageManager));
+        }
+
+        Log.v("app using internet = ", results.toString());
+
+        Collections.sort(results);
+
+        return results;
     }
 }

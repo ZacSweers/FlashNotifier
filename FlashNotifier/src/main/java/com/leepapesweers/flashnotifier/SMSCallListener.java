@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.os.AsyncTask;
 import android.os.IBinder;
@@ -20,6 +22,7 @@ import java.util.Map;
 
 public class SMSCallListener extends Service {
 
+    private final String PERMISSION = "android.permission.ACCESS_FLASHNOTIFIER";
     private Camera mCamera;
     private boolean mLightOn;
     private boolean mFlashing;
@@ -244,19 +247,64 @@ public class SMSCallListener extends Service {
         }
     };
 
+    /**
+     * APIlistener instance
+     */
     private BroadcastReceiver mAPIListener = new BroadcastReceiver() {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (mPrefs.getBoolean("apiDefault", false)) {
-                List<Integer> flashes = null;
-                flashes = intent.getIntegerArrayListExtra("flash_pattern");
-                if (flashes == null) {
-                    flashes = Arrays.asList(50, 50, 50, 50);
+
+            // First verify the API call
+            if (verifyAPICall(intent)) {
+
+                // Check user prefs
+                // IF it's on the whitelist OR (not on the blacklist AND default access is "allow")
+                if (mPrefs.getBoolean("apiDefault", false)) {
+                    List<Integer> flashes;
+                    flashes = intent.getIntegerArrayListExtra("flash_pattern");
+                    if (flashes == null) {
+                        flashes = Arrays.asList(50, 50, 50, 50);
+                    }
+                    new CustomFlashTask().execute(flashes);
                 }
-                new CustomFlashTask().execute(flashes);
             }
 //            toggleContinuousFlash(true);
+        }
+
+        /**
+         * Method for verifying that the API call is allowed, based on the calling app's permissions
+         * @param intent sending intent to use the API
+         * @return true if allowed, false if not
+         */
+        private boolean verifyAPICall(Intent intent) {
+            PackageManager pm = getPackageManager();
+            String packageName = intent.getStringExtra("calling_application");
+
+            // Check to make sure it included the package name
+            if (packageName == null) {
+                Toast.makeText(getBaseContext(), "App has malformed API call (missing package name)", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+
+            // Get the package name
+            ApplicationInfo ai;
+            try {
+                ai = pm.getApplicationInfo(packageName, 0);
+            } catch (final PackageManager.NameNotFoundException e) {
+                ai = null;
+            }
+            final String applicationName = (String) (ai != null ? pm.getApplicationLabel(ai) : "(unknown)");
+
+            Log.d("APIAccess", "package and app name are " + packageName + " " + applicationName);
+
+            // Check the manifest permissions
+            if (PackageManager.PERMISSION_DENIED == pm.checkPermission(PERMISSION, packageName)) {
+                Toast.makeText(getBaseContext(), applicationName + " hasn't declared the permission in the manifest", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+
+            return true;
         }
     };
 
@@ -271,7 +319,7 @@ public class SMSCallListener extends Service {
 
 
     /**
-     * Loads the preferences into a hashmap
+     * Loads the preferences into a hashmap mMap
      * Loosely based on http://stackoverflow.com/a/4955428
      */
     private void refreshACList() {

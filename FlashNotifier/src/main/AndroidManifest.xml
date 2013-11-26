@@ -13,6 +13,12 @@
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
+    <!--Required for API, remove for actual app deployment-->
+    <uses-permission android:name="android.permission.ACCESS_FLASHNOTIFIER" />
+    <!---->
+
+    <permission android:name="android.permission.ACCESS_FLASHNOTIFIER" />
+
     <uses-feature android:name="android.hardware.camera" android:required="true"/>
 
     <application
