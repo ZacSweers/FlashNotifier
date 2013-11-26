@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
 
 public class Main extends SherlockFragmentActivity {
 
@@ -38,7 +39,8 @@ public class Main extends SherlockFragmentActivity {
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
                 // Find the ViewPager Position
-                mActionBar.setSelectedNavigationItem(position);
+                mActionBar.getTabAt(position).select();
+                invalidateOptionsMenu();
             }
         };
 
@@ -57,6 +59,7 @@ public class Main extends SherlockFragmentActivity {
             public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
                 // Pass the position on tab click to ViewPager
                 mPager.setCurrentItem(tab.getPosition());
+                invalidateOptionsMenu();
             }
 
             @Override
@@ -88,5 +91,23 @@ public class Main extends SherlockFragmentActivity {
                 }
            };
         mPrefs.registerOnSharedPreferenceChangeListener(prefListener);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getSupportMenuInflater().inflate(R.menu.main, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        int pageNum = mActionBar.getSelectedTab().getPosition();
+        if(pageNum == 0){
+            menu.findItem(R.id.refresh).setVisible(false);
+        }else{
+            menu.findItem(R.id.refresh).setVisible(true);
+        }
+
+        return true;
     }
 }

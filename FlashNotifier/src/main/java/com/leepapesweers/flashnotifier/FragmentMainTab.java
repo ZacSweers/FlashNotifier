@@ -42,6 +42,7 @@ public class FragmentMainTab extends SherlockFragment {
                              Bundle savedInstanceState) {
         Log.d("FragTab", "here");
         LinearLayout view = (LinearLayout) inflater.inflate(R.layout.fragment_main_tab, container, false);
+        setHasOptionsMenu(false);
 
         mServiceSwitch = (Switch) (view != null ? view.findViewById(R.id.service_switch) : null);
         mSpinner = (Spinner) (view != null ? view.findViewById(R.id.spinner) : null);

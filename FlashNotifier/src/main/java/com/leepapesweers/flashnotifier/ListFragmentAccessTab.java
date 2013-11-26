@@ -15,8 +15,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockListFragment;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +37,7 @@ public class ListFragmentAccessTab extends SherlockListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         mWhitelistPrefs = getActivity().getSharedPreferences(
                 "com.leepapesweers.flashnotifier.whitelistprefs", Context.MODE_PRIVATE);
 
@@ -56,11 +62,30 @@ public class ListFragmentAccessTab extends SherlockListFragment {
         return view;
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        final MenuItem refresh = menu.getItem(R.id.refresh);
+        refresh.setVisible(true);
+        refresh.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                refresh.setIcon(R.layout.progressbar);
+                updateACList();
+                refresh.setIcon(R.drawable.ic_action_reload);
+                return true;
+            }
+        });
+
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
     /**
      * Method for sniffing apps that use a certain permission.
      * Based on here: http://stackoverflow.com/a/13028631/3034339
      */
     private void updateACList() {
+        mAppListItems.clear();
+        mNewAdapter.notifyDataSetChanged();
 
         PackageManager packageManager = getActivity().getPackageManager();
         List<PackageInfo> applist = packageManager.getInstalledPackages(0);
@@ -73,6 +98,14 @@ public class ListFragmentAccessTab extends SherlockListFragment {
                 mNewAdapter.add(data);
             }
         }
+
+        // Sort the apps
+        Collections.sort(mAppListItems, new Comparator<Map<String, String>>() {
+            @Override
+            public int compare(Map<String, String> lhs, Map<String, String> rhs) {
+                return lhs.get("app_name").compareTo(rhs.get("app_name"));
+            }
+        });
 
         mNewAdapter.notifyDataSetChanged();
     }

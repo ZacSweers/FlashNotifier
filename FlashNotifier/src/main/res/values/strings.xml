@@ -6,6 +6,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="Fragment1">Frag1</string>
     <string name="Fragment2">Frag2</string>
+    <string name="refresh">Refresh</string>
 
     <string-array name="APIAccess">
         <item>Allow</item>
