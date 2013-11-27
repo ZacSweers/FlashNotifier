@@ -109,7 +109,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/spinner"
-            android:spinnerStyle="@android:style/Widget.Spinner.DropDown"
             android:drawSelectorOnTop="true"
             android:entries="@array/APIAccess"
             android:gravity="right|center_vertical"

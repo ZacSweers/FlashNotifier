@@ -5,6 +5,8 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -45,6 +47,11 @@ public class FragmentMainTab extends SherlockFragment {
         setHasOptionsMenu(false);
 
         mServiceSwitch = (Switch) (view != null ? view.findViewById(R.id.service_switch) : null);
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN){
+            Typeface tf = Typeface.createFromAsset(
+                    getActivity().getAssets(), "fonts/Roboto-Light.ttf");
+            mServiceSwitch.setTypeface(tf);
+        }
         mSpinner = (Spinner) (view != null ? view.findViewById(R.id.spinner) : null);
         mSMSCheckbox = (CheckBox) (view != null ? view.findViewById(R.id.smsCheckBox) : null);
         mPhoneCheckbox = (CheckBox) (view != null ? view.findViewById(R.id.callCheckBox) : null);

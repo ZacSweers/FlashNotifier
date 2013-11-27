@@ -26,7 +26,7 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="App name"
         android:id="@+id/tv_appname"
-        android:layout_weight="1"/>
+        android:layout_weight="1" />
 
     <!--(i) button for info, popup dialog. Options to blacklist or whitelist-->
     <ImageView
