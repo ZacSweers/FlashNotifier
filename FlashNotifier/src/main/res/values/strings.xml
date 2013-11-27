@@ -7,6 +7,13 @@
     <string name="Fragment1">Frag1</string>
     <string name="Fragment2">Frag2</string>
     <string name="refresh">Refresh</string>
+    <string name="app_icon">App Icon</string>
+    <string name="app_name_string">App name</string>
+    <string name="info_string">Info</string>
+    <string name="sms">SMS</string>
+    <string name="phone_calls">Phone Calls</string>
+    <string name="service">Service</string>
+    <string name="click_to_toggle">Click to toggle</string>
 
     <string-array name="APIAccess">
         <item>Allow</item>

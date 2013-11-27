@@ -7,11 +7,11 @@
     <org.jraf.android.backport.switchwidget.Switch
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Service"
+        android:text="@string/service"
         android:textSize="20sp"
         android:id="@+id/service_switch"
         android:checked="false"
-        android:hint="Click to toggle"/>
+        android:hint="@string/click_to_toggle"/>
 
     <!-- This is just a divider -->
     <View
@@ -27,7 +27,7 @@
         <TextView
             android:layout_height="match_parent"
             android:layout_width="wrap_content"
-            android:text="SMS"
+            android:text="@string/sms"
             android:gravity="left|center_vertical"
             android:maxLines="1"
             android:textSize="20sp" />
@@ -44,7 +44,6 @@
             android:layout_gravity="center_horizontal"
             android:checked="true"
             android:padding="5dp"
-            android:onClick="updateUserPref"
             android:textSize="20sp"
             android:gravity="right|center_vertical"/>
 
@@ -57,7 +56,7 @@
         <TextView
             android:layout_height="match_parent"
             android:layout_width="wrap_content"
-            android:text="Phone Calls"
+            android:text="@string/phone_calls"
             android:gravity="left|center_vertical"
             android:maxLines="1"
             android:textSize="20sp" />
@@ -75,7 +74,6 @@
             android:layout_gravity="center_horizontal"
             android:checked="true"
             android:padding="5dp"
-            android:onClick="updateUserPref"
             android:textSize="20sp"
             android:gravity="right|center_vertical"/>
 

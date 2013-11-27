@@ -13,7 +13,7 @@
         android:id="@+id/ic_appicon"
         android:src="@drawable/ic_generic"
         android:layout_margin="5dp"
-        android:contentDescription="App Icon"
+        android:contentDescription="@string/app_icon"
         android:scaleType="fitCenter"/>
 
     <!--
@@ -24,7 +24,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="App name"
+        android:text="@string/app_name_string"
         android:id="@+id/tv_appname"
         android:layout_weight="1" />
 
@@ -36,33 +36,6 @@
         android:clickable="true"
         android:src="@drawable/ic_action_info"
         android:background="@drawable/selectable_regular"
-        android:contentDescription="Info"/>
-
-    <!--<LinearLayout-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:id="@+id/access_toggle_layout"-->
-        <!--android:orientation="horizontal"-->
-        <!--android:clickable="false">-->
-
-        <!--<ImageView-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:src="@drawable/ic_action_tick"-->
-            <!--android:background="@drawable/selectable_regular"-->
-            <!--android:id="@+id/ic_tick"-->
-            <!--android:clickable="true"-->
-            <!--android:contentDescription="Add"/>-->
-
-        <!--<ImageView-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:src="@drawable/ic_action_cancel"-->
-            <!--android:background="@drawable/selectable_regular"-->
-            <!--android:id="@+id/ic_x"-->
-            <!--android:clickable="true"-->
-            <!--android:contentDescription="Deny" />-->
-
-    <!--</LinearLayout>-->
+        android:contentDescription="@string/info_string"/>
 
 </LinearLayout>
