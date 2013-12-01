@@ -32,6 +32,8 @@ public class FragmentMainTab extends SherlockFragment {
     private Spinner mSpinner;
     private CheckBox mSMSCheckbox;
     private CheckBox mPhoneCheckbox;
+    private LayoutInflater mLayoutInflator;
+    private ViewGroup mViewGroup;
 
     @Override
     public void onAttach(Activity activity) {
@@ -43,6 +45,8 @@ public class FragmentMainTab extends SherlockFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.d("FragTab", "here");
+        mLayoutInflator = inflater;
+        mViewGroup = container;
         LinearLayout view = (LinearLayout) inflater.inflate(R.layout.fragment_main_tab, container, false);
         setHasOptionsMenu(false);
 
@@ -78,7 +82,7 @@ public class FragmentMainTab extends SherlockFragment {
      * Initialize the onClickListeners for the respective views
      * @param view the view containing the views we're updating
      */
-    public void initializeListeners(View view){
+    public void initializeListeners(final View view){
 
         mSpinner.setOnItemSelectedListener(new APIDefaultItemSelectedListener());
 
@@ -100,6 +104,13 @@ public class FragmentMainTab extends SherlockFragment {
             @Override
             public void onClick(View view) {
                 updateUserPref(mSMSCheckbox);
+            }
+        });
+
+        view.findViewById(R.id.tv_calls).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
             }
         });
 

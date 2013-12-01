@@ -31,4 +31,5 @@ dependencies {
     compile files('libs/android-support-v4.jar')
     compile 'org.jraf:android-switch-backport:1.1'
     compile 'com.viewpagerindicator:library:2.4.1@aar'
+    compile 'com.andreabaccega:android-form-edittext:1.0.3'
 }
