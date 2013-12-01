@@ -126,6 +126,7 @@
         android:layout_height="wrap_content"
         android:text="Test"
         android:id="@+id/test"
-        android:layout_gravity="center_horizontal"/>
+        android:layout_gravity="center_horizontal"
+        android:visibility="gone"/>
 
 </LinearLayout>

@@ -8,7 +8,6 @@ import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,8 +31,6 @@ public class FragmentMainTab extends SherlockFragment {
     private Spinner mSpinner;
     private CheckBox mSMSCheckbox;
     private CheckBox mPhoneCheckbox;
-    private LayoutInflater mLayoutInflator;
-    private ViewGroup mViewGroup;
 
     @Override
     public void onAttach(Activity activity) {
@@ -44,9 +41,6 @@ public class FragmentMainTab extends SherlockFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.d("FragTab", "here");
-        mLayoutInflator = inflater;
-        mViewGroup = container;
         LinearLayout view = (LinearLayout) inflater.inflate(R.layout.fragment_main_tab, container, false);
         setHasOptionsMenu(false);
 
@@ -68,7 +62,6 @@ public class FragmentMainTab extends SherlockFragment {
 
         // Set up spinner
         int spinnerPos = (mPrefs.getBoolean("apiDefault", false)) ? 0 : 1;
-        Log.d("FragTab", "" + spinnerPos);
         mSpinner.setSelection((mPrefs.getBoolean("apiDefault", false)) ? 0 : 1);
         mSpinner.refreshDrawableState();
         new APIDefaultItemSelectedListener();
@@ -196,7 +189,6 @@ public class FragmentMainTab extends SherlockFragment {
     public class APIDefaultItemSelectedListener implements AdapterView.OnItemSelectedListener {
 
         public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-            Log.d("itemSelected", "" + pos);
 
             switch (pos) {
                 case 0:
