@@ -52,6 +52,12 @@ public class FragmentMainTab extends SherlockFragment {
                     getActivity().getAssets(), "fonts/Roboto-Light.ttf");
             mServiceSwitch.setTypeface(tf);
         }
+
+        mServiceRunning = isServiceRunning();
+
+        updateServiceStatus();
+
+
         mSpinner = (Spinner) (view != null ? view.findViewById(R.id.spinner) : null);
         mSMSCheckbox = (CheckBox) (view != null ? view.findViewById(R.id.smsCheckBox) : null);
         mPhoneCheckbox = (CheckBox) (view != null ? view.findViewById(R.id.callCheckBox) : null);
