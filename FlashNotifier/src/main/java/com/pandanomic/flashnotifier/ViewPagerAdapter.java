@@ -1,4 +1,4 @@
-package com.leepapesweers.flashnotifier;
+package com.pandanomic.flashnotifier;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;

@@ -1,4 +1,4 @@
-package com.leepapesweers.flashnotifier;
+package com.pandanomic.flashnotifier;
 
 import android.app.Activity;
 import android.app.ActivityManager;
@@ -192,11 +192,9 @@ public class FragmentMainTab extends SherlockFragment {
 
             switch (pos) {
                 case 0:
-//                    Toast.makeText(getActivity(), "Changed default", Toast.LENGTH_SHORT).show();
                     mPrefs.edit().putBoolean("apiDefault", true).commit();
                     break;
                 case 1:
-//                    Toast.makeText(getActivity(), "Changed default", Toast.LENGTH_SHORT).show();
                     mPrefs.edit().putBoolean("apiDefault", false).commit();
                     break;
                 default:

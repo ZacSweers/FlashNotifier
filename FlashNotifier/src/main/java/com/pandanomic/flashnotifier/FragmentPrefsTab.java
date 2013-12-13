@@ -1,4 +1,4 @@
-package com.leepapesweers.flashnotifier;
+package com.pandanomic.flashnotifier;
 
 import android.annotation.TargetApi;
 import android.app.Fragment;

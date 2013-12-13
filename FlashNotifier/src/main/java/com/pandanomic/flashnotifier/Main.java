@@ -1,4 +1,4 @@
-package com.leepapesweers.flashnotifier;
+package com.pandanomic.flashnotifier;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
-import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
@@ -80,17 +79,6 @@ public class Main extends SherlockFragmentActivity {
         // Create second Tab
         tab = mActionBar.newTab().setText("Access").setTabListener(tabListener);
         mActionBar.addTab(tab);
-
-        SharedPreferences.OnSharedPreferenceChangeListener prefListener =
-            new SharedPreferences.OnSharedPreferenceChangeListener() {
-                public void onSharedPreferenceChanged(SharedPreferences prefs,String key) {
-                    if (key.equals("apiDefault"))
-                    {
-                        Toast.makeText(getBaseContext(), "default changed", Toast.LENGTH_SHORT).show();
-                    }
-                }
-           };
-        mPrefs.registerOnSharedPreferenceChangeListener(prefListener);
     }
 
     @Override
