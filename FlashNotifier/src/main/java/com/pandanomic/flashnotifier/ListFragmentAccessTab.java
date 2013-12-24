@@ -18,6 +18,7 @@ import com.actionbarsherlock.app.SherlockListFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.leepapesweers.flashnotifier.R;
 
 import java.util.ArrayList;
 import java.util.Collections;

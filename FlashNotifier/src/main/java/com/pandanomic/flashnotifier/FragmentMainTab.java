@@ -18,6 +18,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragment;
+import com.leepapesweers.flashnotifier.R;
 
 import org.jraf.android.backport.switchwidget.Switch;
 
